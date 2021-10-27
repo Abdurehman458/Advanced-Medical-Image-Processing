@@ -18,12 +18,12 @@ from tqdm import tqdm
 from skimage import exposure, img_as_ubyte
 
 main_path = "AAPM"
-patch_size = (7, 7)
+patch_size = (3, 3)
 nd_list = []
 batch_size=100
-max_patches = 10000
-n_batches = max_patches // batch_size
-
+# max_patches = 10000
+# n_batches = max_patches // batch_size
+dico = MiniBatchDictionaryLearning(n_components=100, alpha=1, n_iter=500)
 imgND_path=[]
 
 # #############################################################################
@@ -53,7 +53,7 @@ for folder in os.listdir(main_path):
         data = data.reshape(data.shape[0], -1) # (256036,49)
         data -= np.mean(data, axis=0)
         data /= np.std(data, axis=0)
-        dico = MiniBatchDictionaryLearning(n_components=100, alpha=1, n_iter=500)
+        
         V = dico.fit(data).components_ 
 
         data = extract_patches_2d(imageLD, patch_size)
@@ -80,7 +80,7 @@ for folder in os.listdir(main_path):
         to_add = [NDvsLD,psnrND,diff_wdict]
         dict_result.append(to_add)
 
-        ######### for Visualizing results ##########
+        ######## for Visualizing results ##########
         plt.subplot(221),plt.imshow(imageND),plt.title('ImageND')
         plt.xticks([]), plt.yticks([])
         plt.subplot(222),plt.imshow(imageLD),plt.title('ImageLD-PSNR:'+str(round(NDvsLD,2)))

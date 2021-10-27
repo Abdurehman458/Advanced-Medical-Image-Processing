@@ -18,7 +18,7 @@ from tqdm import tqdm
 from skimage import exposure, img_as_ubyte
 
 main_path = "AAPM"
-patch_size = (7, 7)
+patch_size = (5, 5)
 nd_list = []
 batch_size=100
 max_patches = 1000
@@ -26,7 +26,7 @@ n_batches = max_patches // batch_size
 
 imgND_path=[]
 
-dico = MiniBatchDictionaryLearning(n_components=200, alpha=1, n_iter=500)
+dico = MiniBatchDictionaryLearning(n_components=100, alpha=1, n_iter=500)
 
 for folder in os.listdir(main_path):
     # path_LDCT = os.path.join(os.path.join(main_path,folder),"quarter_3mm")
@@ -45,7 +45,7 @@ def train_dict(ND_path, iterations=10):
     for it in range(iterations):
         buffer = []
         for i,path in enumerate(tqdm(ND_path)):
-
+            # if i > 5:break
             img = pydicom.dcmread(path).pixel_array
             img = img/img.max()
 
@@ -64,11 +64,11 @@ def train_dict(ND_path, iterations=10):
 
 train_dict(imgND_path,iterations=1)
 V = dico.components_ 
-# np.save("test3_dict",V)
-# V = np.load("dict.npy")
+np.save("test3_dict",V)
+# V = np.load("test3_dict.npy")
 
 
-##### for Visualizing DICTIONARY #####
+### for Visualizing DICTIONARY #####
 
 # plt.figure(figsize=(4.2, 4))
 # for i, comp in enumerate(V[:100]):
